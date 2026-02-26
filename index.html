@@ -1,64 +1,29 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>GIF 재생 페이지</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    text-align: center;
-  }
-
-  button {
-    padding: 12px 20px;
-    font-size: 18px;
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-  }
-
-  button:hover {
-    background: #0056b3;
-  }
-
-  img {
-    margin-top: 20px;
-    max-width: 350px;
-    display: none;
-  }
-</style>
+    <style>
+        #videoPlayer { display: none; width: 100%; max-width: 500px; margin-top: 20px; }
+        button { padding: 10px 20px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 5px; }
+    </style>
 </head>
 <body>
 
-<h2>GIF 재생 테스트</h2>
+    <button onclick="showVideo()">영상 보기</button>
 
-<button id="playBtn">GIF 재생</button>
+    <div id="videoContainer">
+        <video id="videoPlayer" controls>
+            <source src="your-video.mp4" type="video/mp4">
+            브라우저가 비디오 태그를 지원하지 않습니다.
+        </video>
+    </div>
 
-<br>
-
-<img id="gifImg" 
-     src="https://media.giphy.com/media/QBd2kLB5qDmysEXre9/giphy.gif" 
-     alt="GIF">
-
-<script>
-  document.getElementById("playBtn").addEventListener("click", function () {
-
-    const img = document.getElementById("gifImg");
-
-    // GIF 보이게
-    img.style.display = "block";
-
-    // src 리셋 → 다시 설정 → GIF 재생 리셋
-    const url = img.src;
-    img.src = "";
-    setTimeout(() => {
-      img.src = url;
-    }, 10); // 아주 짧은 지연 필요
-  });
-</script>
+    <script>
+        function showVideo() {
+            var video = document.getElementById("videoPlayer");
+            video.style.display = "block"; // 영상 나타내기
+            video.play(); // 자동 재생 시작
+        }
+    </script>
 
 </body>
 </html>
