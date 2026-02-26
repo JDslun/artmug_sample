@@ -2,20 +2,40 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Layered Video Project</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Layered Video</title>
     <style>
-        /* 컨테이너: 모든 레이어를 겹칠 기준 */
+        /* 기본 설정 및 테두리 초기화 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 1. 모든 요소의 클릭 시 검은 점선 테두리(Outline) 제거 */
+        *:focus {
+            outline: none !important;
+        }
+
+        body {
+            background-color: transparent; /* 부모 사이트와 어우러지도록 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
         .container {
             position: relative;
             width: 100%;
-            max-width: 1000px;
-            margin: 0 auto;
-            aspect-ratio: 16 / 9; /* 영상 비율에 맞춤 */
+            max-width: 1000px; /* 원하는 크기로 조절 가능 */
+            aspect-ratio: 16 / 9;
             overflow: hidden;
             border-radius: 12px;
+            background-color: #000;
         }
 
-        /* 레이어 1: 뒷배경 이미지 */
+        /* 레이어 1: 배경 이미지 */
         #bgImage {
             position: absolute;
             top: 0;
@@ -23,7 +43,8 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            z-index: 1; /* 가장 뒤 */
+            z-index: 1;
+            transition: opacity 0.5s ease;
         }
 
         /* 레이어 2: 앞면 영상 */
@@ -33,9 +54,28 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 2; /* 이미지보다 위 */
+            object-fit: cover;
+            z-index: 2;
             cursor: pointer;
-            opacity: 0; /* 배경이 살짝 보이게 하고 싶다면 조절 */
+            opacity: 0; /* 초기 상태 투명 */
+            transition: opacity 0.3s ease;
+
+            /* 2. 안티앨리어싱 및 렌더링 품질 최적화 */
+            image-rendering: auto;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            transform: translateZ(0) scale(1.001); /* 미세 스케일로 계단 현상 완화 */
+            filter: blur(0.4px); /* 부드러운 테두리 처리 */
+            
+            /* 3. 영상 자체 테두리 및 터치 하이라이트 제거 */
+            border: none;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* 영상 재생 중 필터 조정 (선택 사항: 재생 시 선명하게) */
+        #myVideo.playing {
+            filter: blur(0px);
         }
     </style>
 </head>
@@ -46,7 +86,7 @@
 
         <video id="myVideo" playsinline muted onclick="startExperience()">
             <source src="./video1.webm" type="video/webm">
-        </video>
+            <source src="./video1.mp4" type="video/mp4"> </video>
     </div>
 
     <script>
@@ -54,32 +94,29 @@
             const video = document.getElementById("myVideo");
             const img = document.getElementById("bgImage");
 
-            // 1. 영상 재생
-            video.play();
-
-            setTimeout(function() {
-                document.getElementById("bgImage").src = "./testBack2.png";
-            }, 1000); // 여기서 숫자를 바꿔서 시간을 조절하세요 (예: 5초 = 5000)
-            
-            // (선택) 재생 중에는 영상 투명도를 1로 만들어 더 뚜렷하게 함
-            video.style.opacity = "1";
+            // 영상 재생 시작
+            video.play().then(() => {
+                video.style.opacity = "1";
+                video.classList.add('playing');
+                
+                // 지정된 시간(1000ms = 1초) 뒤에 배경 이미지 전환
+                setTimeout(function() {
+                    img.src = "./testBack2.png";
+                    console.log("Background switched to testBack2.png");
+                }, 1000); 
+            }).catch(error => {
+                console.error("재생에 실패했습니다:", error);
+            });
         }
 
-        // 영상이 끝나면 다시 초기 상태로 돌리고 싶을 때
+        // 영상이 끝나면 다시 초기 상태(투명)로 복귀
         document.getElementById("myVideo").onended = function() {
             this.style.opacity = "0";
-            //document.getElementById("bgImage").src = "./testBack2.png";
+            this.classList.remove('playing');
+            // 필요 시 배경을 다시 원래대로 돌리려면 아래 주석 해제
+            // document.getElementById("bgImage").src = "./testBack1.png";
         };
     </script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
