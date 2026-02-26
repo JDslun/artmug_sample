@@ -35,14 +35,14 @@
             height: 100%;
             z-index: 2; /* 이미지보다 위 */
             cursor: pointer;
-            opacity: 0.8; /* 배경이 살짝 보이게 하고 싶다면 조절 */
+            opacity: 0; /* 배경이 살짝 보이게 하고 싶다면 조절 */
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <img id="bgImage" src="https://via.placeholder.com/640x360/AAA/FFFFFF?text=Before+Image" alt="Background">
+        <img id="bgImage" src="./testBack1.png" alt="Background">
 
         <video id="myVideo" playsinline muted onclick="startExperience()">
             <source src="./video.mp4" type="video/mp4">
@@ -67,11 +67,12 @@
 
         // 영상이 끝나면 다시 초기 상태로 돌리고 싶을 때
         document.getElementById("myVideo").onended = function() {
-            this.style.opacity = "0.8";
-            document.getElementById("bgImage").src = "https://via.placeholder.com/640x360/AAA/FFFFFF?text=Before+Image";
+            this.style.opacity = "0";
+            document.getElementById("bgImage").src = "./testBack2.png";
         };
     </script>
 
 </body>
 </html>
+
 
