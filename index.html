@@ -2,51 +2,75 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Video Player</title>
+    <title>Layered Video Project</title>
     <style>
-        body { text-align: center; padding-top: 50px; background: #f0f0f0; }
-        #myVideo { 
-            display: none; /* 처음엔 숨김 */
-            width: 100%; 
-            max-width: 600px; 
-            border-radius: 10px;
+        /* 컨테이너: 모든 레이어를 겹칠 기준 */
+        .container {
+            position: relative;
+            width: 100%;
+            max-width: 640px;
+            margin: 0 auto;
+            aspect-ratio: 16 / 9; /* 영상 비율에 맞춤 */
+            overflow: hidden;
+            border-radius: 12px;
         }
-        button { 
-            padding: 15px 30px; 
-            font-size: 18px; 
-            cursor: pointer; 
-            background: #000; 
-            color: #fff; 
-            border: none; 
-            border-radius: 5px; 
+
+        /* 레이어 1: 뒷배경 이미지 */
+        #bgImage {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1; /* 가장 뒤 */
+        }
+
+        /* 레이어 2: 앞면 영상 */
+        #myVideo {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2; /* 이미지보다 위 */
+            cursor: pointer;
+            opacity: 0.8; /* 배경이 살짝 보이게 하고 싶다면 조절 */
         }
     </style>
 </head>
 <body>
 
-    <button id="playBtn" onclick="playVideo()">영상 재생하기</button>
+    <div class="container">
+        <img id="bgImage" src="https://via.placeholder.com/640x360/AAA/FFFFFF?text=Before+Image" alt="Background">
 
-    <div id="videoContainer">
-        <video id="myVideo" playsinline muted>
+        <video id="myVideo" playsinline muted onclick="startExperience()">
             <source src="./video.mp4" type="video/mp4">
-            영상을 지원하지 않는 브라우저입니다.
         </video>
     </div>
 
     <script>
-        function playVideo() {
-            const v = document.getElementById("myVideo");
-            const btn = document.getElementById("playBtn");
+        function startExperience() {
+            const video = document.getElementById("myVideo");
+            const img = document.getElementById("bgImage");
 
-            // 영상 로드 시도
-            v.style.display = "block";
-            btn.style.display = "none";
-
-            v.play().catch(error => {
-                console.error("재생 실패:", error);
-                alert("영상을 불러오지 못했습니다. 파일명을 다시 확인해주세요.");
-            });
+            // 1. 영상 재생
+            video.play();
+            
+            // 2. 영상이 시작되면 배경 이미지 바꾸기
+            // 여기에 바꿀 이미지 주소를 넣으세요.
+            img.src = "https://via.placeholder.com/640x360/000/FFFFFF?text=After+Image";
+            
+            // (선택) 재생 중에는 영상 투명도를 1로 만들어 더 뚜렷하게 함
+            video.style.opacity = "1";
         }
+
+        // 영상이 끝나면 다시 초기 상태로 돌리고 싶을 때
+        document.getElementById("myVideo").onended = function() {
+            this.style.opacity = "0.8";
+            document.getElementById("bgImage").src = "https://via.placeholder.com/640x360/AAA/FFFFFF?text=Before+Image";
+        };
     </script>
+
 </body>
 </html>
